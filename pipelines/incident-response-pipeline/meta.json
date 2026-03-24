@@ -1,0 +1,11 @@
+{
+  "name": "incident-response-pipeline",
+  "description": "",
+  "author": "aqm-framework",
+  "version": "0.1.0",
+  "tags": [
+    "incident",
+    "response"
+  ],
+  "agents_count": 6
+}

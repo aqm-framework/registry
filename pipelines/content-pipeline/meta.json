@@ -1,0 +1,10 @@
+{
+  "name": "content-pipeline",
+  "description": "",
+  "author": "aqm-framework",
+  "version": "0.1.0",
+  "tags": [
+    "content"
+  ],
+  "agents_count": 4
+}

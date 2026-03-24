@@ -1,0 +1,11 @@
+{
+  "name": "blog-seo-pipeline",
+  "description": "",
+  "author": "aqm-framework",
+  "version": "0.1.0",
+  "tags": [
+    "blog",
+    "seo"
+  ],
+  "agents_count": 6
+}

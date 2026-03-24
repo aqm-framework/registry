@@ -1,0 +1,10 @@
+{
+  "name": "onboarding-pipeline",
+  "description": "",
+  "author": "aqm-framework",
+  "version": "0.1.0",
+  "tags": [
+    "onboarding"
+  ],
+  "agents_count": 5
+}

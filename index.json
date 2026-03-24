@@ -1,0 +1,109 @@
+[
+  {
+    "name": "blog-seo-pipeline",
+    "description": "",
+    "author": "aqm-framework",
+    "version": "0.1.0",
+    "tags": [
+      "blog",
+      "seo"
+    ],
+    "agents_count": 6
+  },
+  {
+    "name": "code-review-pipeline",
+    "description": "",
+    "author": "aqm-framework",
+    "version": "0.1.0",
+    "tags": [
+      "code",
+      "review"
+    ],
+    "agents_count": 5
+  },
+  {
+    "name": "content-pipeline",
+    "description": "",
+    "author": "aqm-framework",
+    "version": "0.1.0",
+    "tags": [
+      "content"
+    ],
+    "agents_count": 4
+  },
+  {
+    "name": "customer-support-pipeline",
+    "description": "",
+    "author": "aqm-framework",
+    "version": "0.1.0",
+    "tags": [
+      "customer",
+      "support"
+    ],
+    "agents_count": 6
+  },
+  {
+    "name": "data-analysis-pipeline",
+    "description": "",
+    "author": "aqm-framework",
+    "version": "0.1.0",
+    "tags": [
+      "data",
+      "analysis"
+    ],
+    "agents_count": 4
+  },
+  {
+    "name": "incident-response-pipeline",
+    "description": "",
+    "author": "aqm-framework",
+    "version": "0.1.0",
+    "tags": [
+      "incident",
+      "response"
+    ],
+    "agents_count": 6
+  },
+  {
+    "name": "legal-review-pipeline",
+    "description": "",
+    "author": "aqm-framework",
+    "version": "0.1.0",
+    "tags": [
+      "legal",
+      "review"
+    ],
+    "agents_count": 4
+  },
+  {
+    "name": "onboarding-pipeline",
+    "description": "",
+    "author": "aqm-framework",
+    "version": "0.1.0",
+    "tags": [
+      "onboarding"
+    ],
+    "agents_count": 5
+  },
+  {
+    "name": "release-pipeline",
+    "description": "",
+    "author": "aqm-framework",
+    "version": "0.1.0",
+    "tags": [
+      "release"
+    ],
+    "agents_count": 4
+  },
+  {
+    "name": "software-feature-pipeline",
+    "description": "",
+    "author": "aqm-framework",
+    "version": "0.1.0",
+    "tags": [
+      "software",
+      "feature"
+    ],
+    "agents_count": 4
+  }
+]

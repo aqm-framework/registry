@@ -1,0 +1,11 @@
+{
+  "name": "legal-review-pipeline",
+  "description": "",
+  "author": "aqm-framework",
+  "version": "0.1.0",
+  "tags": [
+    "legal",
+    "review"
+  ],
+  "agents_count": 4
+}

@@ -1,0 +1,11 @@
+{
+  "name": "data-analysis-pipeline",
+  "description": "",
+  "author": "aqm-framework",
+  "version": "0.1.0",
+  "tags": [
+    "data",
+    "analysis"
+  ],
+  "agents_count": 4
+}

@@ -1,0 +1,11 @@
+{
+  "name": "code-review-pipeline",
+  "description": "",
+  "author": "aqm-framework",
+  "version": "0.1.0",
+  "tags": [
+    "code",
+    "review"
+  ],
+  "agents_count": 5
+}

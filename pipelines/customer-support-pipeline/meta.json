@@ -1,0 +1,11 @@
+{
+  "name": "customer-support-pipeline",
+  "description": "",
+  "author": "aqm-framework",
+  "version": "0.1.0",
+  "tags": [
+    "customer",
+    "support"
+  ],
+  "agents_count": 6
+}
