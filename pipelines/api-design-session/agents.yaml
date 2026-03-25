@@ -1,0 +1,119 @@
+# =============================================================================
+# API Design Session Pipeline
+# =============================================================================
+# Flow: api_design_session (session with moderator) -> spec_writer
+#
+# A moderated discussion between a backend architect, API consumer (frontend),
+# and a DevOps engineer to agree on API design decisions. The moderator
+# (backend architect) declares consensus when all parties are satisfied.
+#
+# Differentiators used:
+#   - Session node with moderator turn order
+#   - moderator_decides consensus method
+#   - Multi-LLM: Gemini for fast spec writing, Claude for discussion
+#   - Summary agent produces structured API spec after consensus
+#
+# Usage:
+#   aqm run "Design REST API for user management: CRUD, auth, roles"
+# =============================================================================
+
+apiVersion: aqm/v0.1
+
+params:
+  api_style:
+    type: string
+    default: "REST"
+    description: "API style (REST, GraphQL, gRPC)"
+  auth_method:
+    type: string
+    default: "JWT"
+    description: "Authentication method"
+
+agents:
+  # ── Session participants ────────────────────────────────────────────────
+
+  - id: backend_architect
+    name: Backend Architect (Moderator)
+    runtime: claude
+    system_prompt: |
+      You are the lead backend architect moderating an API design discussion.
+      API style: ${{ params.api_style }} | Auth: ${{ params.auth_method }}
+
+      Topic: {{ input }}
+
+      Transcript:
+      {{ transcript }}
+
+      As moderator:
+      1. Guide the discussion toward concrete decisions
+      2. Summarize points of agreement
+      3. When all concerns are addressed and the team is aligned,
+         declare: CONSENSUS_REACHED
+
+      Keep responses to 3-5 sentences.
+
+  - id: api_consumer
+    name: API Consumer (Frontend)
+    runtime: claude
+    system_prompt: |
+      You are a frontend developer who will consume this API.
+      API style: ${{ params.api_style }}
+
+      Topic: {{ input }}
+
+      Transcript:
+      {{ transcript }}
+
+      Focus on: developer experience, response format clarity, pagination,
+      error handling, and documentation needs. Keep responses to 2-4 sentences.
+
+  - id: devops_engineer
+    name: DevOps Engineer
+    runtime: claude
+    system_prompt: |
+      You are a DevOps engineer reviewing API design for operational concerns.
+      Auth: ${{ params.auth_method }}
+
+      Topic: {{ input }}
+
+      Transcript:
+      {{ transcript }}
+
+      Focus on: rate limiting, caching strategy, monitoring/observability,
+      deployment concerns, and scaling implications. Keep responses to 2-4 sentences.
+
+  # ── Moderated session ──────────────────────────────────────────────────
+
+  - id: api_design_session
+    name: API Design Session
+    type: session
+    participants: [backend_architect, api_consumer, devops_engineer]
+    turn_order: moderator
+    max_rounds: 6
+    consensus:
+      method: moderator_decides
+      keyword: "CONSENSUS_REACHED"
+    summary_agent: backend_architect
+    handoffs:
+      - to: spec_writer
+        condition: always
+
+  # ── Spec writer (post-consensus) ───────────────────────────────────────
+
+  - id: spec_writer
+    name: API Spec Writer
+    runtime: gemini
+    model: gemini-2.5-flash
+    system_prompt: |
+      You are a technical writer. Based on the agreed API design,
+      produce a structured API specification in OpenAPI-style markdown:
+
+      - Endpoints (method, path, description)
+      - Request/response schemas
+      - Authentication requirements
+      - Error codes
+      - Rate limits
+
+      API style: ${{ params.api_style }}
+      Auth: ${{ params.auth_method }}
+      Agreed design: {{ input }}

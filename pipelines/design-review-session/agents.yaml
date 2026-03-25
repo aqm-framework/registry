@@ -1,0 +1,135 @@
+# =============================================================================
+# Design Review Session Pipeline
+# =============================================================================
+# Flow: planner -> design_review (session) -> implementer
+#
+# The session node brings together an architect, frontend dev, and security
+# engineer to discuss and reach consensus on the design before implementation.
+#
+# Differentiators used:
+#   - Session node (type: session) with round-robin consensus
+#   - Mixed pipeline: batch agent -> session -> batch agent
+#   - Multi-LLM: Claude for planning/implementation, all three in session
+#   - Real-time streaming of conversation in CLI and web
+#   - Meeting transcript saved to transcript.md
+#
+# Usage:
+#   aqm run "Design a user authentication system with OAuth2 and MFA"
+# =============================================================================
+
+apiVersion: aqm/v0.1
+
+params:
+  project_type:
+    type: string
+    default: "web application"
+    description: "Type of project (web app, mobile, API, etc.)"
+  tech_stack:
+    type: string
+    default: "TypeScript, React, Node.js"
+    description: "Primary technology stack"
+
+agents:
+  # ── Stage 1: Planning ──────────────────────────────────────────────────
+  - id: planner
+    name: Planning Agent
+    runtime: claude
+    system_prompt: |
+      You are a senior software architect. Analyze the feature request and
+      produce a concise design proposal (max 500 words) covering:
+      - Architecture approach
+      - Key components
+      - Data flow
+      - Security considerations
+      - Open questions for the team
+
+      Project type: ${{ params.project_type }}
+      Tech stack: ${{ params.tech_stack }}
+      Feature request: {{ input }}
+    handoffs:
+      - to: design_review
+        condition: always
+
+  # ── Stage 2: Design Review Session ─────────────────────────────────────
+  # Three specialists discuss the design proposal in rounds.
+  # Each agent sees the full transcript and responds concisely.
+  # When all agree, the session produces a final consensus summary.
+  - id: architect
+    name: Software Architect
+    runtime: claude
+    system_prompt: |
+      You are a software architect in a design review meeting.
+      Project: ${{ params.project_type }} (${{ params.tech_stack }})
+
+      Design proposal: {{ input }}
+
+      Meeting transcript:
+      {{ transcript }}
+
+      Respond in 2-4 sentences focusing on architecture, scalability,
+      and maintainability. When you fully agree with the current
+      direction, end your response with: VOTE: AGREE
+
+  - id: frontend_dev
+    name: Frontend Developer
+    runtime: claude
+    system_prompt: |
+      You are a senior frontend developer in a design review meeting.
+      Project: ${{ params.project_type }} (${{ params.tech_stack }})
+
+      Design proposal: {{ input }}
+
+      Meeting transcript:
+      {{ transcript }}
+
+      Respond in 2-4 sentences focusing on user experience, frontend
+      architecture, and developer ergonomics. When you fully agree,
+      end with: VOTE: AGREE
+
+  - id: security_engineer
+    name: Security Engineer
+    runtime: claude
+    system_prompt: |
+      You are a security engineer in a design review meeting.
+      Project: ${{ params.project_type }} (${{ params.tech_stack }})
+
+      Design proposal: {{ input }}
+
+      Meeting transcript:
+      {{ transcript }}
+
+      Respond in 2-4 sentences focusing on security implications,
+      threat vectors, and compliance. When you are satisfied that
+      security concerns are addressed, end with: VOTE: AGREE
+
+  - id: design_review
+    name: Design Review Session
+    type: session
+    participants: [architect, frontend_dev, security_engineer]
+    turn_order: round_robin
+    max_rounds: 5
+    consensus:
+      method: vote
+      keyword: "VOTE: AGREE"
+      require: all
+    summary_agent: architect
+    handoffs:
+      - to: implementer
+        condition: always
+
+  # ── Stage 3: Implementation ────────────────────────────────────────────
+  - id: implementer
+    name: Implementation Agent
+    runtime: claude
+    mcp:
+      - server: github
+      - server: filesystem
+    claude_code_flags:
+      - "--allowedTools"
+      - "Edit,Write,Bash,Read"
+    system_prompt: |
+      You are a senior developer. Implement the agreed-upon design.
+      The design has been reviewed and approved by the team.
+
+      Tech stack: ${{ params.tech_stack }}
+      Approved design: {{ input }}

@@ -28,7 +28,7 @@ agents:
   - id: planner
     name: Planning Agent
     model: claude-sonnet-4-20250514
-    runtime: text
+    runtime: claude
     mcp:
       - server: github
       - server: filesystem
@@ -56,7 +56,7 @@ agents:
   - id: reviewer
     name: Review Agent
     model: claude-sonnet-4-20250514
-    runtime: text
+    runtime: claude
     system_prompt: |
       Review the feature specification for a ${{ params.project_language }} project.
       Strictness level: ${{ params.review_strictness }}.
@@ -84,7 +84,7 @@ agents:
   # Uses Claude Code runtime to actually write code.
   - id: developer
     name: Development Agent
-    runtime: claude_code
+    runtime: claude
     mcp:
       - server: github
       - server: filesystem
@@ -110,7 +110,7 @@ agents:
   # On reject, sends it BACK to developer (reverse feedback loop).
   - id: qa
     name: QA Agent
-    runtime: claude_code
+    runtime: claude
     mcp:
       - server: filesystem
     system_prompt: |
