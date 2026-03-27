@@ -105,5 +105,33 @@
       "feature"
     ],
     "agents_count": 4
+  },
+  {
+    "name": "design-review-session",
+    "description": "Conversational design review: architect, frontend dev, and security engineer discuss until consensus, then implement.",
+    "author": "aqm-framework",
+    "version": "0.1.0",
+    "tags": [
+      "session",
+      "design-review",
+      "architecture",
+      "security",
+      "multi-agent-discussion"
+    ],
+    "agents_count": 6
+  },
+  {
+    "name": "api-design-session",
+    "description": "Moderated API design session: backend architect leads discussion with API consumer and DevOps, then generates OpenAPI spec.",
+    "author": "aqm-framework",
+    "version": "0.1.0",
+    "tags": [
+      "session",
+      "api-design",
+      "moderated",
+      "multi-llm",
+      "openapi"
+    ],
+    "agents_count": 5
   }
 ]
